@@ -29,6 +29,7 @@ public class SupabaseClient {
         }
         return retrofit;
     }
+
     public static SupabaseApi getApi() {
         if (api == null) {
             api = getRetrofit().create(SupabaseApi.class);

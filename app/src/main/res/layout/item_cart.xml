@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="#FFFFFF">
+
+        <!-- КАРТИНКА МИНЕРАЛА В КОРЗИНЕ -->
+        <ImageView
+            android:id="@+id/ivMineral"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_mineral_placeholder"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Аметист"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 290 ₽"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                android:layout_marginTop="8dp" />
+
+            <!-- Кнопки количества -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#F5F5F5"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMinus"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        app:icon="@drawable/ic_remove"
+                        app:iconSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/tvQuantity"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginHorizontal="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnPlus"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        app:icon="@drawable/ic_add"
+                        app:iconSize="24dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDelete"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="12dp"
+                        app:icon="@drawable/ic_delete"
+                        app:iconTint="#D32F2F" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

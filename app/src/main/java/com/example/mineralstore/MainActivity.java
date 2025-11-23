@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                                 .edit()
                                 .putInt("user_id", (int) user.id)
                                 .putString("user_login", user.login)
+                                .putString("user_email", user.email != null ? user.email : "")
                                 .apply();
 
                         Toast.makeText(MainActivity.this, "Привет, " + user.login + "!", Toast.LENGTH_LONG).show();
