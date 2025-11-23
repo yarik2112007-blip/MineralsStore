@@ -7,10 +7,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {
+
+    public static CartActivity instance;
+
     private CartAdapter cartAdapter;
+    private RecyclerView rvCart;
     private TextView tvTotalPrice;
     private Button btnClearCart, btnCheckout;
 
@@ -19,7 +22,10 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        RecyclerView rvCart = findViewById(R.id.rvCart);
+        instance = this;
+
+        // ← ПРАВИЛЬНОЕ ПРИВЕДЕНИЕ ТИПОВ!
+        rvCart = findViewById(R.id.rvCart);
         tvTotalPrice = findViewById(R.id.tvTotalPrice);
         btnClearCart = findViewById(R.id.btnClearCart);
         btnCheckout = findViewById(R.id.btnCheckout);
@@ -32,7 +38,7 @@ public class CartActivity extends AppCompatActivity {
 
         btnClearCart.setOnClickListener(v -> {
             CartManager.getInstance().clear();
-            cartAdapter.updateList(new ArrayList<>());
+            refreshCartList();
             updateTotal();
             Toast.makeText(this, "Корзина очищена", Toast.LENGTH_SHORT).show();
         });
@@ -43,30 +49,40 @@ public class CartActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Заказ оформлен на " + CartManager.getInstance().getTotalPrice() + " ₽!", Toast.LENGTH_LONG).show();
                 CartManager.getInstance().clear();
-                cartAdapter.updateList(new ArrayList<>());
+                refreshCartList();
                 updateTotal();
             }
         });
+
         CartManager.getInstance().init(this);
     }
 
-    private void updateTotal() {
+    public void updateTotal() {
         int total = CartManager.getInstance().getTotalPrice();
         int count = CartManager.getInstance().getItemCount();
-        tvTotalPrice.setText(String.format("%,d ₽", total));
+        tvTotalPrice.setText(String.format("%,d ₽", total));  // ← Теперь работает!
         setTitle("Корзина (" + count + ")");
     }
 
-
+    public void refreshCartList() {
+        cartAdapter.updateList(CartManager.getInstance().getCartItems());
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        cartAdapter.notifyDataSetChanged();
+        refreshCartList();
         updateTotal();
-        // Обновляем счётчик в HomeActivity
         if (HomeActivity.instance != null) {
             HomeActivity.instance.updateCartCounter();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (instance == this) {
+            instance = null;
+        }
+        super.onDestroy();
     }
 }

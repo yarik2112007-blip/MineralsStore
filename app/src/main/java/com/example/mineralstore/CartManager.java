@@ -45,13 +45,13 @@ public class CartManager {
             cartItems.add(newItem);
             insertCartItem(newItem);
         }
-        notifyHomeActivity();
+        notifyAllListeners();
     }
 
     public void removeFromCart(CartItem item) {
         cartItems.remove(item);
         deleteCartItem(item);
-        notifyHomeActivity();
+        notifyAllListeners();
     }
 
     public void updateQuantity(CartItem item, int quantity) {
@@ -60,7 +60,7 @@ public class CartManager {
         } else {
             item.quantity = quantity;
             updateCartItem(item);
-            notifyHomeActivity();
+            notifyAllListeners(); // ← Теперь всё обновляется!
         }
     }
 
@@ -78,16 +78,13 @@ public class CartManager {
                     cartItems.clear();
                     cartItems.addAll(response.body());
                     Log.d(TAG, "Корзина загружена: " + cartItems.size() + " товаров");
-                    for (CartItem item : cartItems) {
-                        Log.d(TAG, "Товар: " + item.mineral.getName() + " × " + item.quantity);
-                    }
-                    notifyHomeActivity();
+                    notifyAllListeners();
                 }
             }
 
             @Override
             public void onFailure(Call<List<CartItem>> call, Throwable t) {
-                Log.e(TAG, "Не удалось загрузить корзину", t);
+                Log.e(TAG, "Ошибка загрузки корзины", t);
             }
         });
     }
@@ -98,28 +95,18 @@ public class CartManager {
         body.put("mineral_id", item.mineral_id);
         body.put("quantity", item.quantity);
 
-        Log.d(TAG, "Отправляем в Supabase: " + body);
-
         SupabaseClient.getApi().addToCartClean(SupabaseClient.getAnonKey(), body)
                 .enqueue(new Callback<CartItem>() {
                     @Override
                     public void onResponse(Call<CartItem> call, Response<CartItem> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             item.id = response.body().id;
-                            Log.d(TAG, "Успешно добавлено! Новый id = " + item.id);
-                        } else {
-                            Log.e(TAG, "Ошибка добавления: " + response.code() + " " + response.message());
-                            if (response.errorBody() != null) {
-                                try {
-                                    Log.e(TAG, "Ошибка: " + response.errorBody().string());
-                                } catch (Exception e) { e.printStackTrace(); }
-                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<CartItem> call, Throwable t) {
-                        Log.e(TAG, "Не удалось добавить в корзину", t);
+                        Log.e(TAG, "Ошибка добавления", t);
                     }
                 });
     }
@@ -148,9 +135,7 @@ public class CartManager {
                 SupabaseClient.getAnonKey(),
                 "eq." + item.id
         ).enqueue(new Callback<Void>() {
-            @Override public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.d(TAG, "Элемент удалён из корзины (id=" + item.id + ")");
-            }
+            @Override public void onResponse(Call<Void> call, Response<Void> response) {}
             @Override public void onFailure(Call<Void> call, Throwable t) {}
         });
     }
@@ -183,27 +168,24 @@ public class CartManager {
 
     public int getItemCount() {
         int count = 0;
-        for (CartItem item : cartItems) {
-            count += item.quantity;
-        }
+        for (CartItem item : cartItems) count += item.quantity;
         return count;
     }
 
     public void clear() {
-        for (CartItem item : cartItems) {
-            deleteCartItem(item);
-        }
+        for (CartItem item : cartItems) deleteCartItem(item);
         cartItems.clear();
-        notifyHomeActivity();
+        notifyAllListeners();
     }
 
-    private void notifyHomeActivity() {
+    private void notifyAllListeners() {
         if (HomeActivity.instance != null) {
-            HomeActivity.instance.runOnUiThread(() -> {
-                HomeActivity.instance.updateCartCounter();
-                if (CartActivity.class.getSimpleName().equals(
-                        HomeActivity.instance.getLocalClassName())) {
-                }
+            HomeActivity.instance.runOnUiThread(() -> HomeActivity.instance.updateCartCounter());
+        }
+        if (CartActivity.instance != null) {
+            CartActivity.instance.runOnUiThread(() -> {
+                CartActivity.instance.updateTotal();
+                CartActivity.instance.refreshCartList();
             });
         }
     }

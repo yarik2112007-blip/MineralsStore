@@ -33,20 +33,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartItem item = items.get(position);
+
+        // Картинка (уже есть, оставляем)
         if (item.mineral != null && item.mineral.getImageRes() != null && !item.mineral.getImageRes().isEmpty()) {
             String fileName = item.mineral.getImageRes()
-                    .replace(".jpg", "")
-                    .replace(".png", "")
-                    .replace(".jpeg", "");
-
+                    .replace(".jpg", "").replace(".png", "").replace(".jpeg", "");
             int resId = holder.itemView.getContext().getResources()
                     .getIdentifier(fileName, "drawable", holder.itemView.getContext().getPackageName());
-
-            if (resId != 0) {
-                holder.ivMineral.setImageResource(resId);
-            } else {
-                holder.ivMineral.setImageResource(R.drawable.ic_mineral_placeholder);
-            }
+            holder.ivMineral.setImageResource(resId != 0 ? resId : R.drawable.ic_mineral_placeholder);
         } else {
             holder.ivMineral.setImageResource(R.drawable.ic_mineral_placeholder);
         }
@@ -55,17 +49,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.tvPrice.setText(String.format("%,d ₽", item.mineral.getPrice() * item.quantity));
         holder.tvQuantity.setText(String.valueOf(item.quantity));
 
-        // Остальные кнопки без изменений...
+        // КНОПКИ — ГЛАВНОЕ ИСПРАВЛЕНИЕ!
         holder.btnMinus.setOnClickListener(v -> {
             CartManager.getInstance().updateQuantity(item, item.quantity - 1);
-            notifyItemChanged(position);
-            onUpdate.run();
+            notifyItemChanged(position);     // обновляем строку
+            onUpdate.run();                  // ← ЭТО ОБНОВЛЯЕТ ОБЩУЮ СУММУ!
         });
 
         holder.btnPlus.setOnClickListener(v -> {
             CartManager.getInstance().updateQuantity(item, item.quantity + 1);
             notifyItemChanged(position);
-            onUpdate.run();
+            onUpdate.run();                  // ← ЭТО ВАЖНО!
         });
 
         holder.btnDelete.setOnClickListener(v -> {
@@ -75,7 +69,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 items.remove(pos);
                 notifyItemRemoved(pos);
                 notifyItemRangeChanged(pos, items.size());
-                onUpdate.run();
+                onUpdate.run();                  // ← и тут тоже!
             }
         });
     }
