@@ -20,8 +20,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    public static HomeActivity instance; // ← Для CartManager
-
+    public static HomeActivity instance;
     private MineralAdapter adapter;
     private TextView tvWelcome;
     private SharedPreferences prefs;

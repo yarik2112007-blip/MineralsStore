@@ -47,8 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
             String password = etPassword.getText().toString();
             String confirm = etConfirmPassword.getText().toString();
 
-            // ... валидация ...
-
             Map<String, Object> body = Map.of(
                     "login", login,
                     "email", email,
@@ -56,14 +54,12 @@ public class RegisterActivity extends AppCompatActivity {
                     "created_at", (int) (System.currentTimeMillis() / 1000)
             );
 
-            // ВОТ ПРАВИЛЬНЫЙ ПОРЯДОК ПАРАМЕТРОВ:
             SupabaseClient.getApi().register(SupabaseClient.getAnonKey(), "return=representation", body)
-                    .enqueue(new Callback<List<User>>() {  // ← List<User> вместо User
+                    .enqueue(new Callback<List<User>>() {
                         @Override
                         public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                             if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                                User user = response.body().get(0);  // Берём первый (и единственный) элемент
-
+                                User user = response.body().get(0);
                                 getSharedPreferences("app", MODE_PRIVATE)
                                         .edit()
                                         .putInt("user_id", (int) user.id)

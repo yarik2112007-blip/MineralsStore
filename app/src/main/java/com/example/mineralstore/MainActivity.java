@@ -21,11 +21,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextInputEditText etLogin = findViewById(R.id.etEmail);  // Оставляем ID, но это теперь логин!
+        TextInputEditText etLogin = findViewById(R.id.etEmail);
         TextInputEditText etPassword = findViewById(R.id.etPassword);
         MaterialButton btnLogin = findViewById(R.id.btnLogin);
 
-        // Меняем подсказку, чтобы пользователь понял
         etLogin.setHint("Логин");
 
         findViewById(R.id.tvRegister).setOnClickListener(v ->
@@ -48,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
             ).enqueue(new Callback<List<User>>() {
                 @Override
                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                    // ←←← ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ ←←←
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        // УСПЕШНЫЙ ВХОД
                         User user = response.body().get(0);
 
                         getSharedPreferences("app", MODE_PRIVATE)
@@ -65,14 +62,12 @@ public class MainActivity extends AppCompatActivity {
                         finish();
 
                     } else {
-                        // ←←← ЗДЕСЬ ТОЧНО НЕТ ПОЛЬЗОВАТЕЛЯ ИЛИ НЕПРАВИЛЬНЫЙ ПАРОЛЬ
                         Toast.makeText(MainActivity.this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<User>> call, Throwable t) {
-                    // ←←← ТОЛЬКО ЗДЕСЬ РЕАЛЬНО НЕТ ИНТЕРНЕТА
                     Toast.makeText(MainActivity.this, "Нет интернета: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });

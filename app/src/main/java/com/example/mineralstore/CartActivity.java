@@ -60,7 +60,7 @@ public class CartActivity extends AppCompatActivity {
     public void updateTotal() {
         int total = CartManager.getInstance().getTotalPrice();
         int count = CartManager.getInstance().getItemCount();
-        tvTotalPrice.setText(String.format("%,d ₽", total));  // ← Теперь работает!
+        tvTotalPrice.setText(String.format("%,d ₽", total));
         setTitle("Корзина (" + count + ")");
     }
 

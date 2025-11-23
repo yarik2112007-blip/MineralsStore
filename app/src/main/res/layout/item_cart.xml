@@ -14,7 +14,6 @@
         android:padding="16dp"
         android:background="#FFFFFF">
 
-        <!-- КАРТИНКА МИНЕРАЛА В КОРЗИНЕ -->
         <ImageView
             android:id="@+id/ivMineral"
             android:layout_width="90dp"
@@ -48,7 +47,6 @@
                 android:textColor="#2E7D32"
                 android:layout_marginTop="8dp" />
 
-            <!-- Кнопки количества -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

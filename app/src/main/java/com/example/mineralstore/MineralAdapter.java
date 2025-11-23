@@ -59,7 +59,6 @@ public class MineralAdapter extends RecyclerView.Adapter<MineralAdapter.MineralV
             holder.ivMineral.setImageResource(R.drawable.ic_mineral_placeholder);
         }
 
-        // Кнопка "В корзину"
         holder.btnAddToCart.setOnClickListener(v -> {
             CartManager.getInstance().addToCart(mineral);
 
@@ -84,7 +83,6 @@ public class MineralAdapter extends RecyclerView.Adapter<MineralAdapter.MineralV
         return mineralList.size();
     }
 
-    // Это и есть твой ViewHolder — он должен быть здесь!
     static class MineralViewHolder extends RecyclerView.ViewHolder {
         ImageView ivMineral;
         TextView tvName;
